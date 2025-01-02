@@ -18,8 +18,8 @@ type Url struct {
 
 const MaxIndex = 2193
 const MaxDims = 256
-const BatchSize = 100
-const Iters = 100
+const BatchSize = 10
+const Iters = 10
 const RootUrl = "http://localhost:8080"
 
 var seed int64 = time.Now().UnixNano()
@@ -49,25 +49,20 @@ func randDim () int {
 	return rand.Intn(MaxDims) * 100
 }
 
-func generateUrl (index Index, ch chan<- Url)  {
+func generateUrl (index Index)  {
 	color := randColor()
 	fit := randFit()
 	width := randDim()
 	height := randDim()
 	url := fmt.Sprintf("%s/images/%d.jpeg?w=%d&h=%d&fit=%s&bg=%s", RootUrl, rand.Intn(MaxIndex), width, height, fit, color)
-	ch<- Url{url, index}
+	fmt.Printf("(%d, %d) -> %s\n", index.batchIndex, index.index, url)
 }
 
 func main() {
 	rand.New(rand.NewSource(seed))
-	urlsChan := make(chan Url)
-	urls := make([]Url, BatchSize)
-
 	for batchIndex := 0; batchIndex < Iters; batchIndex++ {
 		for index := 0; index < BatchSize; index++ {
-			go generateUrl(Index{batchIndex, index}, urlsChan)
-			urls[index] = <-urlsChan
-			fmt.Printf("(%d, %d) -> %s\n", urls[index].index.batchIndex, urls[index].index.index, urls[index].url)
+			go generateUrl(Index{batchIndex, index})
 		}
 	}
 }
