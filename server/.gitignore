@@ -1,0 +1,24 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+
+# Dependency directories
+dist/
+
+# Environment variables
+.env
+
+# Mac system files
+.DS_Store
+
+# Docker artifacts
+.docker
+
+# public directory
+public/
+!public/.gitkeep
+public/images/
+!public/images/.gitkeep
